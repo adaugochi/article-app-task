@@ -8,6 +8,7 @@ use App\Services\NewsApiService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use jcobhams\NewsApi\NewsApiException;
 
 class FetchNewsApiArticles extends Command
@@ -73,12 +74,14 @@ class FetchNewsApiArticles extends Command
                 });
 
                 $this->info('Articles successfully saved to the database.');
+                Log::info('Articles successfully saved to the database.');
             } else {
                 $this->info('No new articles to process.');
             }
 
         } catch (NewsApiException $e) {
             $this->error('Error fetching articles: ' . $e->getMessage());
+            Log::error('Error fetching articles: ' . $e->getMessage());
         }
     }
 }

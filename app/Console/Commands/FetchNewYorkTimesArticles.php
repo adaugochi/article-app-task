@@ -8,6 +8,7 @@ use App\Services\NewYorkTimeApiService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use jcobhams\NewsApi\NewsApiException;
 
 class FetchNewYorkTimesArticles extends Command
@@ -71,12 +72,15 @@ class FetchNewYorkTimesArticles extends Command
                 });
 
                 $this->info('Articles successfully saved to the database.');
+                Log::info('Articles successfully saved to the database.');
+
             } else {
                 $this->info('No new articles to process.');
             }
 
         } catch (\Exception $e) {
             $this->error('Error fetching articles: ' . $e->getMessage());
+            Log::error('Error fetching articles: ' . $e->getMessage());
         }
     }
 }

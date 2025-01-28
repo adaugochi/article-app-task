@@ -9,6 +9,7 @@ use App\Services\GuardianApiService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FetchGuardianApiNews extends Command
 {
@@ -39,6 +40,7 @@ class FetchGuardianApiNews extends Command
     public function handle()
     {
         $this->info('Fetching articles from the Guardian API...');
+        Log::info('Fetching articles from the Guardian API...');
         $page = 1;
         $bulkData = [];
 
@@ -76,12 +78,15 @@ class FetchGuardianApiNews extends Command
                     });
 
                     $this->info('Articles successfully saved to the database.');
+                    Log::info('Articles successfully saved to the database.');
                 } else {
                     $this->info('No new articles to process.');
+                    Log::info('No new articles to process.');
                 }
             }
         } catch (\Exception $exception) {
             $this->error('Error fetching news: ' . $exception->getMessage());
+            Log::error('Error fetching news: ' . $exception->getMessage());
         }
 
     }
