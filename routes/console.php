@@ -10,4 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('fetch:news-api:articles')->hourly();
 Schedule::command('fetch:guardian-news')->everyMinute();
-
+Schedule::command('fetch:new-york-times:articles')->everyMinute();

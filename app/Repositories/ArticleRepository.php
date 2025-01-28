@@ -17,6 +17,7 @@ class ArticleRepository extends BaseRepository
         return $query->when($search, function ($q) use ($search) {
             $q->where('title', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%")
+                ->orWhere('category', 'LIKE', "%{$search}%")
                 ->orWhere('source', 'LIKE', "%{$search}%");
         });
     }
@@ -25,6 +26,7 @@ class ArticleRepository extends BaseRepository
     {
         foreach ($options as $filterKey => $filterValue) {
             switch ($filterKey) {
+            case 'category':
             case 'source':
                 $query->where($filterKey, $filterValue);
                 break;

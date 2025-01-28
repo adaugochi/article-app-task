@@ -18,7 +18,7 @@ class ArticleController extends Controller
     public function index(Request $request): JsonResponse
     {
         $q = $request->input('q');
-        $filters = $request->only(['dates', 'source']);
+        $filters = $request->only(['dates', 'source', 'category']);
         $articles = $this->service->getArticles($q, $filters);
         return response()->json(['data' => $articles]);
     }
