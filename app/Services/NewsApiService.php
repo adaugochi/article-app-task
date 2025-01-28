@@ -17,12 +17,19 @@ class NewsApiService
     /**
      * @throws NewsApiException
      */
-    public function articles()
+    public function articles(): array
     {
-        // business entertainment general health science sports technology
-        $query = 'business';
+        $categories = ['business', 'entertainment', 'general', 'health', 'science', 'sports', 'technology'];
         $language = config('app.locale');
+        $allArticles = [];
 
-        return $this->news_api->getEverything($query, null, null, null, null, null, $language);
+        foreach ($categories as $query) {
+            $response = $this->news_api->getEverything($query, null, null, null, null, null, $language);
+
+            $articles = data_get($response, 'articles', []);
+            $allArticles = array_merge($allArticles, $articles);
+        }
+
+        return $allArticles;
     }
 }

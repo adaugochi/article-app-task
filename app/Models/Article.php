@@ -12,6 +12,7 @@ class Article extends Model
         'url',
         'image_url',
         'source',
+        'category',
         'published_at'
     ];
 

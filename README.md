@@ -15,6 +15,7 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan migrate:refresh 
+php artisan queue:work
 ```
 
 ## Open Crontab 

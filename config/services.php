@@ -39,4 +39,9 @@ return [
         'key' => env('NEWS_API_KEY'),
     ],
 
+    'guardian' => [
+        'url' => 'https://content.guardianapis.com',
+        'key' => env('THE_GUARDIAN_API_KEY')
+    ]
+
 ];
