@@ -35,3 +35,12 @@ NEW_YORK_TIMES_API_KEY=****
 php artisan serve
 ```
 
+## Endpoints
+
+```text
+http://localhost:8000/api/articles?q=protester
+http://localhost:8000/api/articles?source=news_api
+http://localhost:8000/api/articles?category=politics
+http://localhost:8000/api/articles?dates=2025-01-27,2025-01-28
+
+```
