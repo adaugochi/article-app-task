@@ -12,8 +12,15 @@ class ArticleService extends BaseService
         $this->repo = $article_repository;
     }
 
-    public function getArticles($search, $filters): LengthAwarePaginator
+    public function getArticles($request): LengthAwarePaginator
     {
-        return $this->repo->getPaginated([], [], $search, $filters);
+        $search = $request->input('q');
+        $filters = $request->only(['dates', 'source', 'category']);
+        return $this->repo->getPaginated($search, $filters);
+    }
+
+    public function getArticlesByCategory($category): LengthAwarePaginator
+    {
+        return $this->repo->getArticlesByCategory($category);
     }
 }

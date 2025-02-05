@@ -12,9 +12,15 @@ class ArticleRepository extends BaseRepository
         return new Article();
     }
 
-    protected function applySearchQuery($query, $search)
+    public function getArticlesByCategory($category)
     {
-        return $query->when($search, function ($q) use ($search) {
+        $this->query = $this->getQuery()->where('category', $category);
+        return $this->getPaginated();
+    }
+
+    protected function applySearchQuery($search)
+    {
+        return $this->query->when($search, function ($q) use ($search) {
             $q->where('title', 'LIKE', "%{$search}%")
                 ->orWhere('description', 'LIKE', "%{$search}%")
                 ->orWhere('category', 'LIKE', "%{$search}%")
@@ -22,13 +28,13 @@ class ArticleRepository extends BaseRepository
         });
     }
 
-    protected function applyFilters($query, $options)
+    protected function applyFilters($options)
     {
         foreach ($options as $filterKey => $filterValue) {
             switch ($filterKey) {
             case 'category':
             case 'source':
-                $query->where($filterKey, $filterValue);
+                $this->query->where($filterKey, $filterValue);
                 break;
 
             case 'dates':
@@ -36,7 +42,7 @@ class ArticleRepository extends BaseRepository
                 if (count($dates) === 2) {
                     $startDate = trim($dates[0]);
                     $endDate = trim($dates[1]);
-                    $query->whereBetween('published_at', [$startDate, $endDate]);
+                    $this->query->whereBetween('published_at', [$startDate, $endDate]);
                 }
                 break;
 
@@ -44,6 +50,6 @@ class ArticleRepository extends BaseRepository
                 break;
             }
         }
-        return $query;
+        return $this->query;
     }
 }

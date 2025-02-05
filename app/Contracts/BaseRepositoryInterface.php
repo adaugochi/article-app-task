@@ -29,21 +29,11 @@ interface BaseRepositoryInterface
     /**
      * Retrieve paginated records that match the conditions.
      *
-     * @param array $conditions
-     * @param array $with
      * @param string|null $search
      * @param array $filters
-     * @param string $orderBy
-     * @param string $sort
      * @return LengthAwarePaginator
      */
-    public function getPaginated(
-        array $conditions = [],
-        array $with = [],
-        string $search = null,
-        array $filters = [],
-        string $orderBy = 'updated_at',
-        string $sort = 'DESC'): LengthAwarePaginator;
+    public function getPaginated(string $search = null, array $filters = []): LengthAwarePaginator;
 
     /**
      * Insert a new record

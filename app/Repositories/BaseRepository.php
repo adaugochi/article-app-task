@@ -10,8 +10,26 @@ abstract class BaseRepository implements BaseRepositoryInterface
 {
     public int $perPage = 10;
 
+    protected $query;
+
+    protected string $orderBy = 'updated_at';
+    protected string $sort = 'DESC';
+
     public abstract function getModel();
 
+    /**
+     * @return mixed
+     */
+    public function getQuery(): mixed
+    {
+        if(!$this->query) return $this->setQuery();
+        return $this->query;
+    }
+
+    public function setQuery()
+    {
+        return $this->getModel()->newQuery();
+    }
 
     public function findById($id, array $with = []): ?Model
     {
@@ -24,28 +42,17 @@ abstract class BaseRepository implements BaseRepositoryInterface
     }
 
     public function getPaginated(
-        $conditions = [],
-        $with = [],
         $search = null,
-        $filters = [],
-        string $orderBy = 'updated_at',
-        string $sort = 'DESC'
+        $filters = []
     ): LengthAwarePaginator
     {
-        $query = $this->getModel()->where($conditions)->with($with);
-        if ($filters) {
-            $query = $this->applyFilters($query, $filters); // Apply dynamic filters
-        }
+        $this->query = $this->getQuery();
+        $this->applyFilters($filters);
+        $this->applySearchQuery($search);
+        $this->applyOrderBy();
+        $page = $filters['page'] ?? null; // Extract the page from filters if provided
 
-        $query = $this->applySearchQuery($query, $search);  // Apply search query if search is provided
-        $query = $this->applyOrderBy($query, $orderBy, $sort);
-
-        // Handle dynamic pagination per page
-        $perPage = $this->perPage;
-        // Extract the page from filters if provided
-        $page = $filters['page'] ?? null;
-
-        return $query->paginate($perPage, ['*'], 'page', $page)->withQueryString();
+        return $this->query->paginate($this->perPage, ['*'], 'page', $page)->withQueryString();
     }
 
     public function create($attributes): Model
@@ -58,18 +65,18 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->findFirst($conditions)->update($attributes);
     }
 
-    protected function applySearchQuery($query, $search)
+    protected function applySearchQuery($search)
     {
-        return $query;
+        return $this->query;
     }
 
-    protected function applyFilters($query, $options)
+    protected function applyFilters($options)
     {
-        return $query;
+        return $this->query;
     }
 
-    protected function applyOrderBy($query, $orderBy, $sort)
+    protected function applyOrderBy()
     {
-        return $query->orderBy($orderBy, $sort);
+        return $this->query->orderBy($this->orderBy, $this->sort);
     }
 }
