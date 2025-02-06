@@ -3,7 +3,11 @@
 - Stores only unique articles in a MySQL database.
 - Automatically updates articles every hour.
 - Provides an API (`/articles`) to fetch stored articles
-- This endpoint should allow the frontend to retrieve articles based on search queries, filtering criteria (date, category, source),
+- This endpoint should allow the frontend to retrieve articles based on search queries, filtering criteria 
+  (date, category, source)
+- Incorporate best practices of software development, including DRY (Don t Repeat Yourself), KISS (Keep It
+  Simple, Stupid), and SOLID (Single responsibility, Open-closed, Liskov substitution, Interface segregation,
+  Dependency inversion) principles.
 
 ## Requirement
 - PHP 8.0
