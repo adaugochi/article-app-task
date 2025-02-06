@@ -1,14 +1,17 @@
-# Article App
+# Article App Task (Laravel 11)
+- Fetches articles from multiple sources (Guardian, NYT, NewsAPI).
+- Stores only unique articles in a MySQL database.
+- Automatically updates articles every hour.
+- Provides an API (`/articles`) to fetch stored articles
+- This endpoint should allow the frontend to retrieve articles based on search queries, filtering criteria (date, category, source),
 
 ## Requirement
-
 - PHP 8.0
 - Composer
 - MySQL
 - Web server (Apache or Nginx)
 
 ## Project Setup
-
 ```shell
 composer install
 cp .env.example .env
@@ -24,19 +27,18 @@ THE_GUARDIAN_API_KEY=****
 NEW_YORK_TIMES_API_KEY=****
 ```
 
-## Open Crontab 
-```shell
-* * * * * cd ~/<path-to-your-project>/article-app && php artisan schedule:run >> /dev/null 2>&1
-```
-
 ## Run development server
 
 ```shell
 php artisan serve
 ```
 
-## Endpoints
+## Run Schedule Task
+```shell
+php artisan schedule:run
+```
 
+## Endpoints
 ```text
 http://localhost:8000/api/articles?q=protester
 http://localhost:8000/api/articles?source=news_api

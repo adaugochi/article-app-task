@@ -2,14 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Enum\DataSourceEnum;
 use App\Models\Article;
 use App\Services\NewYorkTimeApiService;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use jcobhams\NewsApi\NewsApiException;
 
 class FetchNewYorkTimesArticles extends Command
 {
@@ -40,47 +36,21 @@ class FetchNewYorkTimesArticles extends Command
     public function handle()
     {
         try {
-            $bulkData = [];
-
             $articles = $this->service->fetchArticles();
-
-            foreach ($articles as $key => $article) {
-                $publishedAt = Carbon::parse(data_get($article, 'pub_date'))->format('Y-m-d H:i:s');
-
-                $bulkData[] = [
-                    'url' => data_get($article, 'web_url'),
-                    'title' => data_get($article, 'snippet'),
-                    'description' => data_get($article, 'lead_paragraph'),
-                    'source' => DataSourceEnum::NEW_YORK_TIMES->value,
-                    'category' => data_get($article, 'subsection_name'),
-                    'published_at' => $publishedAt
-                ];
-            }
-
-            if (!empty($bulkData)) {
-                $count = count($bulkData);
-                $this->info("Processing $count of data...");
-                DB::transaction(function () use ($bulkData) {
-                    $chunkSize = 100;
-                    foreach (array_chunk($bulkData, $chunkSize) as $chunk) {  // Chunk data to avoid memory issues
-                        Article::query()->upsert(
-                            $chunk,
-                            ['url'], // Unique key
-                            ['title', 'description', 'category', 'source', 'published_at']
-                        );
-                    }
-                });
-
-                $this->info('Articles successfully saved to the database.');
-                Log::info('Articles successfully saved to the database.');
-
-            } else {
-                $this->info('No new articles to process.');
-            }
+            DB::transaction(function () use ($articles) {
+                $chunkSize = 100;
+                foreach (array_chunk($articles, $chunkSize) as $chunk) {  // Chunk data to avoid memory issues
+                    Article::query()->upsert(
+                        $chunk,
+                        ['url'], // Unique key
+                        ['title', 'description', 'category', 'source', 'published_at']
+                    );
+                }
+            });
+            $this->info('Articles successfully saved to the database.');
 
         } catch (\Exception $e) {
             $this->error('Error fetching articles: ' . $e->getMessage());
-            Log::error('Error fetching articles: ' . $e->getMessage());
         }
     }
 }
