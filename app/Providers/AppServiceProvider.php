@@ -22,13 +22,14 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(ArticleService::class, function ($app) {
+            $articleServices = [
+                $app->make(GuardianApiService::class),
+                $app->make(NewYorkTimeApiService::class),
+                $app->make(NewsApiService::class),
+            ];
             return new ArticleService(
                 $app->make(ArticleRepository::class),
-                [
-                    $app->make(GuardianApiService::class),
-                    $app->make(NewYorkTimeApiService::class),
-                    $app->make(NewsApiService::class),
-                ]
+                ...$articleServices
             );
         });
     }

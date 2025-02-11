@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\ArticleApiInterface;
 use App\Models\Article;
 use App\Repositories\ArticleRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -12,7 +13,7 @@ class ArticleService extends BaseService
 {
     protected array $articleApis;
 
-    public function __construct(ArticleRepository $article_repository, array $articleApis)
+    public function __construct(ArticleRepository $article_repository, ArticleApiInterface ...$articleApis)
     {
         $this->repo = $article_repository;
         $this->articleApis = $articleApis;
